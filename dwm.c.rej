@@ -1,0 +1,38 @@
+--- dwm.c
++++ dwm.c
+@@ -862,17 +766,10 @@ getatomprop(Client *c, Atom prop)
+ 	unsigned long dl;
+ 	unsigned char *p = NULL;
+ 	Atom da, atom = None;
+-	/* FIXME getatomprop should return the number of items and a pointer to
+-	 * the stored data instead of this workaround */
+-	Atom req = XA_ATOM;
+-	if (prop == xatom[XembedInfo])
+-		req = xatom[XembedInfo];
+ 
+-	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, req,
++	if (XGetWindowProperty(dpy, c->win, prop, 0L, sizeof atom, False, XA_ATOM,
+ 	                      &da, &di, &dl, &dl, &p) == Success && p) {
+ 		atom = *(Atom *)p;
+-		if (da == xatom[XembedInfo] && dl == 2)
+-			atom = ((Atom *)p)[1];
+ 		XFree(p);
+ 	}
+ 	return atom;
+@@ -1822,15 +1621,10 @@ updatebars(void)
+ 	for (m = mons; m; m = m->next) {
+ 		if (m->barwin)
+ 			continue;
+-		w = m->ww;
+-		if (showsystray && m == systraytomon(m))
+-			w -= getsystraywidth();
+-		m->barwin = XCreateWindow(dpy, root, m->wx, m->by, w, bh, 0, DefaultDepth(dpy, screen),
++		m->barwin = XCreateWindow(dpy, root, m->wx, m->by, m->ww, bh, 0, DefaultDepth(dpy, screen),
+ 		                          CopyFromParent, DefaultVisual(dpy, screen),
+ 		                          CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
+ 		XDefineCursor(dpy, m->barwin, cursor[CurNormal]->cursor);
+-		if (showsystray && m == systraytomon(m))
+-			XMapRaised(dpy, systray->win);
+ 		XMapRaised(dpy, m->barwin);
+ 	}
+ }
