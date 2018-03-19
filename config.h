@@ -58,7 +58,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *browsercmd[] = { "surf", "https://duckduckgo.com", NULL };
+static const char *browsercmd[] = { "surf", "-g", "-d", "https://duckduckgo.com", NULL };
 static const char *lockcmd[] = { "slock", NULL };
 static const char *irccmd[] = { "st", "weechat", NULL };
 
@@ -99,6 +99,9 @@ static Key keys[] = {
 	{ MODKEY,                       XF86XK_AudioLowerVolume, spawn, SHCMD("exec mpc seek -00:00:15") },
 	{ MODKEY,                       XF86XK_AudioRaiseVolume, spawn, SHCMD("exec mpc seek +00:00:15") },
 	{ MODKEY,                       XF86XK_AudioMute,        spawn, SHCMD("exec mpc toggle") },
+	{ 0,                            XF86XK_TaskPane, view,     {0} },
+	{ 0,                            XF86XK_RotateWindows, spawn, SHCMD("/home/alefir/bin/rotatescreen") },
+	{ 0,                            XF86XK_ScreenSaver, spawn, {.v = lockcmd } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
