@@ -3,6 +3,10 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray        = 1;     /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Iosevka Term Slab:size=9" };
@@ -28,13 +32,12 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
@@ -57,24 +60,34 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenusudocmd[] = { "bash", "/home/alefir/bin/dmenusudo", NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *browsercmd[] = { "surf", "-g", "-d", "https://duckduckgo.com", NULL };
+static const char *browsercmd[] = { "firefox", NULL };
 static const char *lockcmd[] = { "slock", NULL };
 static const char *irccmd[] = { "st", "weechat", NULL };
+static const char *filecmd[]  = { "st", "ranger", NULL };
+static const char *plexcmd[] = { "plexmediaplayer", NULL };
+static const char *nmcmd[] = { "networkmanager_dmenu", NULL };
+static const char *passcmd[] = { "keepassx2", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_d,      spawn,          {.v = dmenusudocmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
+	{ MODKEY,			XK_n,      spawn,	   {.v = nmcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_k,      spawn,          {.v = passcmd } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_i,      spawn,          {.v = irccmd } },
+	{ MODKEY,                       XK_p,      spawn,          {.v = plexcmd } },
+	{ MODKEY,                       XK_r,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_u,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ShiftMask,             XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY|ShiftMask,             XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_l,      spawn,          {.v = lockcmd } },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
@@ -90,8 +103,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD("exec mpc volume -5") },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD("exec mpc volume +5") },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD("exec amixer -c 0 set Master 1%-") },
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD("exec amixer -c 0 set Master 1%+") },
 	{ 0,                            XF86XK_AudioPlay,        spawn, SHCMD("exec mpc toggle") },
 	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD("exec amixer -c 0 sset Master toggle") },
 	{ 0,                            XF86XK_AudioPrev,        spawn, SHCMD("exec mpc prev") },
