@@ -1,8 +1,12 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayspacing = 2;   /* systray spacing*/
+static const int systraypinningfailfirst = 1;   /* 1: if finning fails, desplay systray on the first monitor, False: display systray on the last monitor */
+static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "Iosevka Term Slab:size=9" };
@@ -28,6 +32,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+	{ "Firefox",  NULL,       NULL,       0,            0,           -1 },
 };
 
 /* layout(s) */
@@ -59,12 +64,20 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "st", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 static const char *lockcmd[] = { "slock", NULL };
-static const char *irccmd[] = { "st", "weechat", NULL };
+static const char *irccmd[] = { "st", "TERM=st-256color", "weechat", NULL };
+static const char *filecmd[] = { "st", "ranger", NULL };
 static const char *nmcmd[] = { "networkmanager_dmenu", NULL };
+static const char *sudodmenucmd[] = { "dmenusudo", NULL };
+static const char *dmenumountcmd[] = { "dmenumount", NULL };
+static const char *dmenuumountcmd[] = { "dmenuumount", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY|ShiftMask,             XK_d,      spawn,          {.v = sudodmenucmd } },
+	{ MODKEY|ShiftMask,             XK_m,      spawn,          {.v = dmenumountcmd } },
+	{ MODKEY,                       XK_m,      spawn,          {.v = dmenumountcmd } },
+	{ MODKEY,                       XK_r,      spawn,          {.v = filecmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
@@ -81,7 +94,6 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_q,      spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_space,  setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_f,      setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
