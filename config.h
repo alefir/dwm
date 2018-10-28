@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
 static const unsigned int systrayspacing = 2;   /* systray spacing */
@@ -103,10 +103,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD("exec amixer -c 0 set Master 1%-") },
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD("exec amixer -c 0 set Master 1%+") },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD("exec pactl set-sink-volume 0 -1%") },
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD("exec pactl set-sink-volume 0 +1%") },
 	{ 0,                            XF86XK_AudioPlay,        spawn, SHCMD("exec mpc toggle") },
-	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD("exec amixer -c 0 sset Master toggle") },
+	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD("exec pactl set-sink-mute 0 toggle") },
 	{ 0,                            XF86XK_AudioPrev,        spawn, SHCMD("exec mpc prev") },
 	{ 0,                            XF86XK_AudioNext,        spawn, SHCMD("exec mpc next") },
 	{ MODKEY,                       XF86XK_AudioLowerVolume, spawn, SHCMD("exec mpc seek -00:00:15") },
